@@ -4,53 +4,32 @@ ifeq ($(TARGET_USES_QCOM_MM_AUDIO),true)
 LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
-
-LOCAL_ARM_MODE             := arm
-LOCAL_MODULE               := sound_trigger.primary.$(TARGET_BOARD_PLATFORM)
-LOCAL_MODULE_TAGS          := optional
-LOCAL_MODULE_OWNER         := qti
-LOCAL_MODULE_RELATIVE_PATH := hw
-LOCAL_MULTILIB             := $(AUDIOSERVER_MULTILIB)
+LOCAL_MODULE               := libsoundtriggerhal.qti
 LOCAL_VENDOR_MODULE        := true
+LOCAL_MODULE_RELATIVE_PATH := hw
 
-LOCAL_CFLAGS += -Wall -Werror
-LOCAL_CFLAGS += -DSOUND_TRIGGER_PLATFORM=$(TARGET_BOARD_PLATFORM)
+LOCAL_C_INCLUDES            := $(LOCAL_PATH)/inc
 
-LOCAL_C_INCLUDES += \
-    system/media/audio_utils/include \
-    external/expat/lib
+LOCAL_VINTF_FRAGMENTS      := configs/soundtrigger.qti.xml
 
 LOCAL_SRC_FILES := \
-    SoundTriggerDevice.cpp \
-    SoundTriggerSession.cpp
-
-LOCAL_HEADER_LIBRARIES := \
-    libhardware_headers \
-    libsystem_headers \
-    libaudio_extn_headers \
-    libaudio_hal_headers
+    src/soundtriggerhw/Service.cpp \
+    src/soundtriggerhw/SoundTriggerHw.cpp \
+    src/soundtriggerhw/SoundTriggerSession.cpp \
+    src/utils/AidlToPalConverter.cpp \
+    src/utils/PalToAidlConverter.cpp \
+    src/utils/CoreUtils.cpp \
+    src/utils/SharedMemoryWrapper.cpp
 
 LOCAL_SHARED_LIBRARIES := \
     libbase \
     liblog \
-    libcutils \
-    libdl \
-    libaudioutils \
-    libexpat \
-    libhidlbase \
-    libprocessgroup \
     libutils \
+    libcutils \
+    libbinder_ndk \
+    android.hardware.soundtrigger3-V1-ndk \
+    android.media.audio.common.types-V2-ndk \
     libar-pal
-
-ifeq ($(strip $(AUDIO_FEATURE_ENABLED_LSM_HIDL)),true)
-    LOCAL_HEADER_LIBRARIES += liblisten_headers
-
-    LOCAL_SHARED_LIBRARIES += \
-        vendor.qti.hardware.ListenSoundModel@1.0-impl \
-        vendor.qti.hardware.ListenSoundModel@1.0
-
-    LOCAL_CFLAGS += -DLSM_HIDL_ENABLED
-endif
 
 include $(BUILD_SHARED_LIBRARY)
 endif #TARGET_USES_QCOM_MM_AUDIO
