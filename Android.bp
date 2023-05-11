@@ -20,6 +20,11 @@ cc_library_shared {
 
     local_include_dirs: ["inc"],
 
+    header_libs: select(soong_config_variable("qtiaudio", "headers_namespace"), {
+        any @ value: ["//" + value + ":libarpal_headers"],
+        default: [],
+    }),
+
     shared_libs: [
         "libbase",
         "liblog",
