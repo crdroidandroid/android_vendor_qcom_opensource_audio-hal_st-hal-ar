@@ -41,10 +41,25 @@ SoundTriggerHw::~SoundTriggerHw()
 ScopedAStatus SoundTriggerHw::registerGlobalCallback(
     const std::shared_ptr<ISoundTriggerHwGlobalCallback> &callback)
 {
-    ALOGI("%s:", __func__);
-    mGlobalCallback = callback;
+    int status = 0;
+    pal_param_resources_available_t param_resource_avail;
 
-    return ndk::ScopedAStatus::ok();
+    ALOGV("%s: Enter", __func__);
+
+    mGlobalCallback = callback;
+    param_resource_avail.callback = (void*)&onResourcesAvailable;
+    param_resource_avail.cookie = (uint64_t)this;
+
+    status = pal_set_param(PAL_PARAM_ID_ST_RESOURCES_AVAILABLE,
+                          (void*)&param_resource_avail,
+                          sizeof(pal_param_resources_available_t));
+    if (status) {
+        ALOGE("%s: failed to set paramID for resources available, status %d",
+            __func__, status);
+    }
+
+    ALOGI("%s: Exit, status %d", __func__, status);
+    return CoreUtils::halErrorToAidl(status);
 }
 
 std::shared_ptr<SoundTriggerSession> SoundTriggerHw::getSession(int32_t handle)
@@ -258,6 +273,16 @@ ScopedAStatus SoundTriggerHw::setParameter(
 
     ALOGI("%s: unsupported API", __func__);
     return CoreUtils::halErrorToAidl(status);
+}
+
+void SoundTriggerHw::onResourcesAvailable(uint64_t cookie)
+{
+    SoundTriggerHw *hw = (SoundTriggerHw *)cookie;
+
+    if (hw)
+        hw->mGlobalCallback->onResourcesAvailable();
+
+    ALOGI("%s: Exit", __func__);
 }
 
 } // namespace aidl::android::hardware::soundtrigger3

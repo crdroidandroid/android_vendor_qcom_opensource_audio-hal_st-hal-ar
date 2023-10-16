@@ -53,6 +53,7 @@ public:
 
 private:
     std::shared_ptr<ISoundTriggerHwGlobalCallback> mGlobalCallback;
+    static void onResourcesAvailable(uint64_t cookie);
     std::shared_ptr<SoundTriggerSession> getSession(int32_t handle);
     void addSession(std::shared_ptr<SoundTriggerSession> &session);
     void removeSession(int32_t handle);
