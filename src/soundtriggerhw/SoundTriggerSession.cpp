@@ -159,7 +159,7 @@ void SoundTriggerSession::onRecognitionCallback_l(struct pal_st_recognition_even
     RecognitionEvent event;
 
     PalToAidlConverter::convertRecognitionEvent(palEvent, event);
-    STHAL_INFO(LOG_TAG, "%s: sending %s", event.toString().c_str());
+    STHAL_INFO(LOG_TAG, "sending %s", event.toString().c_str());
     mClientCallback->recognitionCallback(getSessionHandle(), event);
 }
 
