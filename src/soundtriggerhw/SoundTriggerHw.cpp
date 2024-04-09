@@ -51,7 +51,7 @@ ScopedAStatus SoundTriggerHw::registerGlobalCallback(
     param_resource_avail.callback = (void*)&onResourcesAvailable;
     param_resource_avail.cookie = (uint64_t)this;
 
-    status = pal_set_param(PAL_PARAM_ID_ST_RESOURCES_AVAILABLE,
+    status = pal_set_param(PAL_PARAM_ID_RESOURCES_AVAILABLE,
                           (void*)&param_resource_avail,
                           sizeof(pal_param_resources_available_t));
     if (status) {
