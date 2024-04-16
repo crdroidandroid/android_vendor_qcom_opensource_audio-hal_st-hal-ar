@@ -1,11 +1,12 @@
 /*
- * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
+ * Copyright (c) 2023-2024 Qualcomm Innovation Center, Inc. All rights reserved.
  * SPDX-License-Identifier: BSD-3-Clause-Clear
  */
 
-#define LOG_TAG "sthal_CoreUtils"
+#define LOG_TAG "STHAL: CoreUtils"
 #include <log/log.h>
 #include <utils/CoreUtils.h>
+#include <soundtriggerhw/SoundTriggerCommon.h>
 
 #include "PalApi.h"
 
@@ -35,7 +36,7 @@ bool CoreUtils::isAcdStream(const SoundModel &model)
 bool CoreUtils::isValidSoundModel(const SoundModel &aidlModel)
 {
     if (!isAcdStream(aidlModel) && (aidlModel.dataSize == 0)) {
-        ALOGE("%s: Invalid sound model %s", aidlModel.toString().c_str());
+        STHAL_ERR(LOG_TAG, "Invalid sound model %s", aidlModel.toString().c_str());
         return false;
     }
     return true;
@@ -46,7 +47,7 @@ bool CoreUtils::isValidPhraseSoundModel(const PhraseSoundModel &aidlModel)
     if ((aidlModel.common.dataSize == 0) ||
         (aidlModel.common.type != SoundModelType::KEYPHRASE) ||
         (aidlModel.phrases.size() == 0)) {
-        ALOGE("%s: Invalid phrase sound model %s", aidlModel.toString().c_str());
+        STHAL_ERR(LOG_TAG, "Invalid phrase sound model %s", aidlModel.toString().c_str());
         return false;
     }
     return true;
@@ -108,7 +109,7 @@ void CoreUtils::printPalRecognitionEvent(struct pal_st_recognition_event *palEve
         os << ", " << palEvent->media_config.ch_info.ch_map[i];
     os << "}";
     os << "}";
-    ALOGV("%s %s ", __func__, os.str().c_str());
+    STHAL_VERBOSE(LOG_TAG, "%s ", os.str().c_str());
 }
 
 void CoreUtils::printPalStRecognitionConfig(
@@ -139,7 +140,7 @@ void CoreUtils::printPalStRecognitionConfig(
     }
     os << "]";
     os << "}";
-    ALOGV("%s: %s ", __func__, os.str().c_str());
+    STHAL_VERBOSE(LOG_TAG, "%s ", os.str().c_str());
 }
 
 void CoreUtils::printPalStUuid(struct st_uuid *uuid)
@@ -152,7 +153,7 @@ void CoreUtils::printPalStUuid(struct st_uuid *uuid)
             uuid->node[0], uuid->node[1], uuid->node[2], uuid->node[3], uuid->node[4],
             uuid->node[5]);
     os << "pal_st_uuid {" << str << "}";
-    ALOGV("%s %s ", __func__, os.str().c_str());
+    STHAL_VERBOSE(LOG_TAG, "%s ", os.str().c_str());
 }
 
 Status CoreUtils::convertHalErrorCodeToAidlStatus(int halError)
