@@ -61,7 +61,7 @@ std::string CoreUtils::convertUuidToString(const st_uuid &uuid)
              uuid.timeLow, uuid.timeMid, uuid.timeHiAndVersion, uuid.clockSeq,
              uuid.node[0], uuid.node[1], uuid.node[2], uuid.node[3], uuid.node[4],
              uuid.node[5]);
-    return str;
+    return std::string(str);
 }
 
 void CoreUtils::convertStringtoUuid(const std::string &aidlUuid, st_uuid *palUuid)
