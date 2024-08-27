@@ -145,6 +145,7 @@ void SoundTriggerSession::onCallback(uint32_t *eventData)
         } else {
             onPhraseRecognitionCallback_l((pal_st_phrase_recognition_event *)eventData);
         }
+        sessionLockStatus = false;
     } else {
         STHAL_WARN(LOG_TAG, "skip notification as handle %d has stopped", getSessionHandle());
     }
@@ -160,6 +161,7 @@ void SoundTriggerSession::onRecognitionCallback_l(struct pal_st_recognition_even
 
     PalToAidlConverter::convertRecognitionEvent(palEvent, event);
     STHAL_INFO(LOG_TAG, "sending %s", event.toString().c_str());
+    mSessionMutex.unlock();
     mClientCallback->recognitionCallback(getSessionHandle(), event);
 }
 
@@ -170,6 +172,7 @@ void SoundTriggerSession::onPhraseRecognitionCallback_l(
 
     PalToAidlConverter::convertPhraseRecognitionEvent(palPhraseEvent, event);
     STHAL_INFO(LOG_TAG, "sending %s", event.toString().c_str());
+    mSessionMutex.unlock();
     mClientCallback->phraseRecognitionCallback(getSessionHandle(), event);
 }
 
