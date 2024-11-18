@@ -9,7 +9,6 @@ LOCAL_MODULE_RELATIVE_PATH := hw
 
 LOCAL_C_INCLUDES            := $(LOCAL_PATH)/inc
 
-LOCAL_VINTF_FRAGMENTS      := configs/soundtrigger.qti.xml
 
 LOCAL_SRC_FILES := \
     src/soundtriggerhw/Service.cpp \
