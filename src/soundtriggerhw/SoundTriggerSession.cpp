@@ -107,7 +107,7 @@ exit:
         delete paramPayload;
 
     STHAL_VERBOSE(LOG_TAG, "Exit, status = %d, version = %s", status, version);
-    return version;
+    return std::string(version);
 }
 
 int SoundTriggerSession::palCallback(pal_stream_handle_t *streamHandle,
