@@ -1,0 +1,35 @@
+soong_namespace {
+}
+
+cc_library_shared {
+    name: "libsoundtriggerhal.qti",
+    relative_install_path: "hw",
+    vendor: true,
+
+    vintf_fragments: ["configs/soundtrigger.qti.xml"],
+
+    srcs: [
+        "src/soundtriggerhw/Service.cpp",
+        "src/soundtriggerhw/SoundTriggerHw.cpp",
+        "src/soundtriggerhw/SoundTriggerSession.cpp",
+        "src/utils/AidlToPalConverter.cpp",
+        "src/utils/PalToAidlConverter.cpp",
+        "src/utils/CoreUtils.cpp",
+        "src/utils/SharedMemoryWrapper.cpp",
+    ],
+
+    local_include_dirs: ["inc"],
+
+    shared_libs: [
+        "libbase",
+        "liblog",
+        "libutils",
+        "libcutils",
+        "libbinder_ndk",
+        "android.hardware.soundtrigger3-V1-ndk",
+        "android.media.audio.common.types-V2-ndk",
+    ] + select(soong_config_variable("qtiaudio", "libarpal_namespace"), {
+        any @ value: ["//" + value + ":libar-pal"],
+        default: [],
+    }),
+}
